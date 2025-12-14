@@ -1,0 +1,8 @@
+{
+  "name": "AI IT Ticket Solver",
+  "description": "An AI-powered IT Support Assistant that uses multimodal input (text and video) to understand and help solve technical issues, then automatically generates a support ticket.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
