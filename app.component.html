@@ -1,145 +1,118 @@
-
-<main class="min-h-screen bg-gray-900 text-gray-100 flex flex-col items-center justify-center p-4">
-  <div class="w-full max-w-7xl mx-auto bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-gray-700">
-    <header class="p-4 border-b border-gray-700 flex justify-between items-center bg-gray-800/50 backdrop-blur-sm">
-      <div class="flex items-center space-x-3">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M12 6V5m0 14v-1m6-6h1m-18 0h1M5.64 5.64L4.22 4.22m15.56 15.56l-1.42-1.42M18.36 5.64l-1.42 1.42M5.64 18.36l1.42-1.42" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18a6 6 0 100-12 6 6 0 000 12z" />
-        </svg>
-        <h1 class="text-2xl font-bold text-white">TechAssist AI</h1>
+<main class="min-h-screen bg-slate-950 text-slate-100 p-6 md:p-10">
+  <div class="max-w-7xl mx-auto space-y-8">
+    <header class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+      <div>
+        <p class="text-fuchsia-300 uppercase tracking-[0.2em] text-xs">AI CREATIVE SUITE</p>
+        <h1 class="text-3xl md:text-5xl font-bold mt-2">{{ brandName }}</h1>
+        <p class="text-slate-300 mt-3 max-w-2xl">
+          Generate visual concepts and ready-to-launch AI influencer personas from one prompt.
+          This demo mirrors a Lovio.ai-style workflow for rapid campaign ideation.
+        </p>
       </div>
-      @if (sessionState() === 'idle') {
-        <button (click)="startSupportSession()" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-105">
-          Start Support Session
-        </button>
-      } @else {
-        <button (click)="endSupportSession()" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-105">
-          End Session
-        </button>
-      }
+      <div class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm">
+        <p class="text-slate-400">Output</p>
+        <p class="font-semibold text-emerald-300">Images + Influencer Concepts</p>
+      </div>
     </header>
 
-    @if (sessionState() !== 'idle') {
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 min-h-[75vh]">
-        <!-- Left Column: Video & Ticket -->
-        <div class="md:col-span-1 flex flex-col gap-4">
-          <!-- Video Feed -->
-          <div class="bg-black rounded-lg overflow-hidden border border-gray-700 aspect-video flex items-center justify-center relative">
-            <video #videoElement autoplay playsinline class="w-full h-full object-cover" [class.hidden]="!isSessionActive()"></video>
-            @if (videoError()) {
-              <div class="p-4 text-center text-red-400">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                {{ videoError() }}
-              </div>
-            }
-            @if (sessionState() === 'resolved') {
-              <div class="absolute inset-0 bg-green-900/80 flex flex-col items-center justify-center text-center p-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                  <h3 class="text-2xl font-bold text-white">Issue Resolved!</h3>
-                  <p class="text-green-200 mt-2">This support session has been concluded.</p>
-              </div>
-            }
-          </div>
-          <!-- Ticket Information -->
-          <div class="bg-gray-800/50 border border-gray-700 rounded-lg p-4 flex-grow">
-            <h2 class="text-lg font-semibold text-cyan-300 mb-3 border-b border-gray-600 pb-2">Ticket Information</h2>
-            @if (currentTicket(); as ticket) {
-              <div class="space-y-3 text-sm">
-                <p><strong class="text-gray-400 w-24 inline-block">Ticket ID:</strong> <span class="font-mono bg-gray-700 px-2 py-1 rounded">{{ ticket.id }}</span></p>
-                <p><strong class="text-gray-400 w-24 inline-block">Status:</strong> 
-                  <span class="px-2 py-1 rounded text-xs font-bold"
-                    [class]="{
-                      'bg-green-500 text-green-900': ticket.status === 'Resolved',
-                      'bg-yellow-500 text-yellow-900': ticket.status === 'In Progress',
-                      'bg-blue-500 text-blue-900': ticket.status === 'Open'
-                    }">{{ ticket.status }}</span>
-                </p>
-                <p><strong class="text-gray-400 w-24 inline-block">Priority:</strong> 
-                   <span [class]="{
-                      'text-red-400': ticket.priority === 'High',
-                      'text-yellow-400': ticket.priority === 'Medium',
-                      'text-green-400': ticket.priority === 'Low'
-                   }">{{ ticket.priority }}</span>
-                </p>
-                <p><strong class="text-gray-400 w-24 inline-block">Category:</strong> {{ ticket.category }}</p>
-                <p class="pt-2 border-t border-gray-700"><strong class="text-gray-400 block mb-1">Title:</strong> {{ ticket.title }}</p>
-              </div>
-            } @else {
-              <p class="text-gray-500 text-center py-8">A ticket will be generated once you submit an issue.</p>
-            }
-          </div>
+    <section class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-5">
+        <h2 class="text-xl font-semibold">Creative Input</h2>
+
+        <label class="block space-y-2">
+          <span class="text-sm text-slate-300">Image Prompt</span>
+          <textarea
+            [value]="prompt()"
+            (input)="updatePrompt($any($event.target).value)"
+            rows="5"
+            class="w-full rounded-xl bg-slate-950 border border-slate-700 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-fuchsia-400"
+          ></textarea>
+        </label>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <label class="space-y-2">
+            <span class="text-sm text-slate-300">Primary Platform</span>
+            <select
+              [value]="selectedPlatform()"
+              (change)="updatePlatform($any($event.target).value)"
+              class="w-full rounded-lg bg-slate-950 border border-slate-700 px-3 py-2"
+            >
+              @for (platform of platformOptions; track platform) {
+                <option [value]="platform">{{ platform }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="space-y-2">
+            <span class="text-sm text-slate-300">Niche</span>
+            <select
+              [value]="selectedNiche()"
+              (change)="updateNiche($any($event.target).value)"
+              class="w-full rounded-lg bg-slate-950 border border-slate-700 px-3 py-2"
+            >
+              @for (niche of nicheOptions; track niche) {
+                <option [value]="niche">{{ niche }}</option>
+              }
+            </select>
+          </label>
         </div>
-        <!-- Right Column: Transcript & Input -->
-        <div class="md:col-span-2 bg-gray-900/70 rounded-lg border border-gray-700 flex flex-col h-[75vh]">
-          <!-- Transcript -->
-          <div class="flex-grow p-4 overflow-y-auto space-y-4">
-            @for (message of transcript(); track $index) {
-              <div class="flex" [class.justify-end]="message.author === 'user'">
-                <div class="max-w-xl p-3 rounded-xl" [class]="message.author === 'ai' ? 'bg-gray-700' : 'bg-cyan-600 text-white'">
-                  <p class="text-sm leading-relaxed">{{ message.text }}</p>
-                </div>
-              </div>
-            }
-            @if(sessionState() === 'loading' && !isRecording()) {
-                <div class="flex">
-                    <div class="max-w-xl p-3 rounded-xl bg-gray-700 flex items-center space-x-2">
-                         <div class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-                         <div class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse [animation-delay:0.2s]"></div>
-                         <div class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse [animation-delay:0.4s]"></div>
-                    </div>
-                </div>
-            }
-          </div>
-          <!-- Input Area -->
-          <div class="p-4 border-t border-gray-700 flex flex-col items-center justify-center space-y-4">
-            @if (errorMessage()) {
-              <div class="bg-red-900/50 border border-red-700 text-red-300 text-sm p-3 rounded-lg w-full text-center">
-                {{ errorMessage() }}
-              </div>
-            }
-            <div class="h-6 text-gray-400 italic">
-              @if(sessionState() === 'active') {
-                {{ interimTranscript() || "Click the microphone to describe your issue" }}
+
+        <button
+          (click)="generateAssets()"
+          [disabled]="!canGenerate()"
+          class="w-full rounded-xl py-3 font-semibold transition bg-fuchsia-600 hover:bg-fuchsia-500 disabled:bg-slate-700 disabled:text-slate-400"
+        >
+          @if (isGenerating()) {
+            Generating concepts...
+          } @else {
+            Create Images & AI Influencers
+          }
+        </button>
+      </div>
+
+      <div class="lg:col-span-3 space-y-6">
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+          <h2 class="text-xl font-semibold mb-4">Generated Image Concepts</h2>
+          @if (generatedImages().length === 0) {
+            <div class="h-56 flex items-center justify-center rounded-xl border border-dashed border-slate-700 text-slate-400 text-center p-8">
+              Run generation to preview three visual concepts.
+            </div>
+          } @else {
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              @for (image of generatedImages(); track image.id) {
+                <article class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
+                  <img [src]="image.dataUrl" [alt]="image.title" class="w-full aspect-square object-cover" />
+                  <div class="p-3">
+                    <h3 class="font-medium">{{ image.title }}</h3>
+                    <p class="text-xs text-slate-400 mt-1">{{ image.prompt }}</p>
+                  </div>
+                </article>
               }
             </div>
-            <button (click)="toggleRecording()" 
-              [disabled]="sessionState() !== 'active'"
-              class="w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 text-white disabled:opacity-50 disabled:cursor-not-allowed relative"
-              [class]="isRecording() ? 'bg-red-500' : 'bg-cyan-500 hover:bg-cyan-600'"
-              [class.ring-4]="isSpeaking()"
-              [class.ring-cyan-300]="isSpeaking()"
-              [class.ring-offset-4]="isSpeaking()"
-              [class.ring-offset-gray-800]="isSpeaking()">
-              
-              @if (isRecording() && !isSpeaking()) {
-                <div class="w-20 h-20 rounded-full bg-red-500 absolute animate-ping opacity-75"></div>
-              }
+          }
+        </section>
 
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-14 0m7 10v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-              </svg>
-            </button>
-             @if (sessionState() === 'active') {
-                <p class="text-xs text-gray-500">
-                    @if (isRecording()) {
-                        Listening... (click to stop)
-                    } @else {
-                        Click to speak
-                    }
-                </p>
-            }
-          </div>
-        </div>
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+          <h2 class="text-xl font-semibold mb-4">AI Influencer Concepts</h2>
+          @if (influencerConcepts().length === 0) {
+            <p class="text-slate-400">Influencer personas appear after image generation.</p>
+          } @else {
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              @for (creator of influencerConcepts(); track creator.name) {
+                <article class="rounded-xl border border-slate-700 bg-slate-950 p-4 space-y-2">
+                  <div class="flex items-center justify-between">
+                    <h3 class="font-semibold">{{ creator.name }}</h3>
+                    <span class="text-xs bg-fuchsia-900/60 text-fuchsia-200 px-2 py-1 rounded">{{ creator.followers }}</span>
+                  </div>
+                  <p class="text-sm text-emerald-300">{{ creator.platform }} • {{ creator.niche }}</p>
+                  <p class="text-xs text-slate-400 uppercase tracking-wide">Tone: {{ creator.tone }}</p>
+                  <p class="text-sm text-slate-300">{{ creator.bio }}</p>
+                </article>
+              }
+            </div>
+          }
+        </section>
       </div>
-    } @else {
-      <div class="flex flex-col items-center justify-center p-20 min-h-[75vh] text-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-gray-600 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-        <h2 class="text-3xl font-bold text-gray-300">Welcome to AI-Powered IT Support</h2>
-        <p class="text-gray-400 mt-2 max-w-lg">Click "Start Support Session" to connect with TechAssist AI. It can see what you see to help solve your problems faster.</p>
-      </div>
-    }
+    </section>
   </div>
 </main>
